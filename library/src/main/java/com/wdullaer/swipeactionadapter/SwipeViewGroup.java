@@ -128,4 +128,24 @@ public class SwipeViewGroup extends FrameLayout {
             value.setTranslationX(-Integer.signum(key)*value.getWidth());
         }
     }
+
+    @Override
+    public Object getTag() {
+        return contentView.getTag();
+    }
+
+    @Override
+    public void setTag(Object tag) {
+        contentView.setTag(tag);
+    }
+
+    @Override
+    public Object getTag(int key) {
+        return contentView.getTag(key);
+    }
+
+    @Override
+    public void setTag(int key, Object tag) {
+        contentView.setTag(key, tag);
+    }
 }
