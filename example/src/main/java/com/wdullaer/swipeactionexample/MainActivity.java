@@ -27,7 +27,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.wdullaer.swipeactionadapter.SwipeActionAdapter;
-import com.wdullaer.swipeactionadapter.SwipeDirections;
+import com.wdullaer.swipeactionadapter.SwipeDirection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,10 +55,10 @@ public class MainActivity extends ListActivity implements
                 .setListView(getListView());
         setListAdapter(mAdapter);
 
-        mAdapter.addBackground(SwipeDirections.DIRECTION_FAR_LEFT,R.layout.row_bg_left_far)
-                .addBackground(SwipeDirections.DIRECTION_NORMAL_LEFT,R.layout.row_bg_left)
-                .addBackground(SwipeDirections.DIRECTION_FAR_RIGHT,R.layout.row_bg_right_far)
-                .addBackground(SwipeDirections.DIRECTION_NORMAL_RIGHT,R.layout.row_bg_right);
+        mAdapter.addBackground(SwipeDirection.DIRECTION_FAR_LEFT,R.layout.row_bg_left_far)
+                .addBackground(SwipeDirection.DIRECTION_NORMAL_LEFT,R.layout.row_bg_left)
+                .addBackground(SwipeDirection.DIRECTION_FAR_RIGHT,R.layout.row_bg_right_far)
+                .addBackground(SwipeDirection.DIRECTION_NORMAL_RIGHT,R.layout.row_bg_right);
     }
 
 
@@ -100,17 +100,17 @@ public class MainActivity extends ListActivity implements
         String dir = "";
         boolean output = false;
         switch(direction) {
-            case SwipeDirections.DIRECTION_FAR_LEFT:
+            case SwipeDirection.DIRECTION_FAR_LEFT:
                 dir = "Far left";
                 break;
-            case SwipeDirections.DIRECTION_NORMAL_LEFT:
+            case SwipeDirection.DIRECTION_NORMAL_LEFT:
                 dir = "Left";
                 output = true;
                 break;
-            case SwipeDirections.DIRECTION_FAR_RIGHT:
+            case SwipeDirection.DIRECTION_FAR_RIGHT:
                 dir = "Far right";
                 break;
-            case SwipeDirections.DIRECTION_NORMAL_RIGHT:
+            case SwipeDirection.DIRECTION_NORMAL_RIGHT:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Test Dialog").setMessage("You swiped right").create().show();
                 dir = "Right";

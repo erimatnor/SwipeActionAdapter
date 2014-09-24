@@ -97,7 +97,7 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
     private View mDownView;
     private SwipeViewGroup mDownViewGroup;
     private boolean mPaused;
-    private int mDirection;
+    private SwipeDirection mDirection;
     private boolean mFar;
 
     /**
@@ -122,7 +122,7 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
          *                 for convenience.
          * @param direction The type of swipe that triggered the action
          */
-        boolean onAction(ListView listView, int position, int direction);
+        boolean onAction(ListView listView, int position, SwipeDirection direction);
     }
 
     /**
@@ -290,7 +290,7 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
                 mDownView = null;
                 mDownPosition = ListView.INVALID_POSITION;
                 mSwiping = false;
-                mDirection = SwipeDirections.DIRECTION_NEUTRAL;
+                mDirection = SwipeDirection.DIRECTION_NEUTRAL;
                 mFar = false;
                 break;
             }
@@ -321,7 +321,7 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
                     // dismiss
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;
-                    final int direction = mDirection;
+                    final SwipeDirection direction = mDirection;
                     ++mDismissAnimationRefCount;
                     mDownView.animate()
                             .translationX(dismissRight ? mViewWidth : -mViewWidth)
@@ -354,7 +354,7 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
                 mDownView = null;
                 mDownPosition = ListView.INVALID_POSITION;
                 mSwiping = false;
-                mDirection = SwipeDirections.DIRECTION_NEUTRAL;
+                mDirection = SwipeDirection.DIRECTION_NEUTRAL;
                 mFar = false;
                 break;
             }
@@ -378,11 +378,11 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
                     */
 
                     if (isFarSwipe(deltaX)) {
-                        mDirection = (deltaX > 0 ? SwipeDirections.DIRECTION_FAR_RIGHT :
-                                SwipeDirections.DIRECTION_FAR_LEFT);
+                        mDirection = (deltaX > 0 ? SwipeDirection.DIRECTION_FAR_RIGHT :
+                                SwipeDirection.DIRECTION_FAR_LEFT);
                     } else {
-                        mDirection = (deltaX > 0 ? SwipeDirections.DIRECTION_NORMAL_RIGHT :
-                                SwipeDirections.DIRECTION_NORMAL_LEFT);
+                        mDirection = (deltaX > 0 ? SwipeDirection.DIRECTION_NORMAL_RIGHT :
+                                SwipeDirection.DIRECTION_NORMAL_LEFT);
                     }
                     mDownViewGroup.showBackground(mDirection);
 

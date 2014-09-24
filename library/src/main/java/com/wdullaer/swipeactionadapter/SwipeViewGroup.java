@@ -22,6 +22,9 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 /**
  * Class to hold a ListView item and the swipe backgrounds
  *
@@ -30,8 +33,9 @@ import android.widget.FrameLayout;
 public class SwipeViewGroup extends FrameLayout {
     private View contentView = null;
 
-    private int visibleView = SwipeDirections.DIRECTION_NEUTRAL;
-    private SparseArray<View> mBackgroundMap = new SparseArray<View>();
+    private SwipeDirection visibleView = SwipeDirection.DIRECTION_NEUTRAL;
+    private final EnumMap<SwipeDirection, View> mBackgroundMap =
+            new EnumMap<SwipeDirection, View>(SwipeDirection.class);
 
     /**
      * Standard android View constructor
@@ -71,7 +75,7 @@ public class SwipeViewGroup extends FrameLayout {
      * @param direction The key to be used to find it again
      * @return A reference to the a layout so commands can be chained
      */
-    public SwipeViewGroup addBackground(View background, int direction){
+    public SwipeViewGroup addBackground(View background, SwipeDirection direction){
         if(mBackgroundMap.get(direction) != null) removeView(mBackgroundMap.get(direction));
 
         background.setVisibility(View.INVISIBLE);
@@ -85,10 +89,10 @@ public class SwipeViewGroup extends FrameLayout {
      *
      * @param direction The key of the View to be shown
      */
-    public void showBackground(int direction){
+    public void showBackground(SwipeDirection direction){
         if(mBackgroundMap.get(direction) == null) return;
 
-        if(visibleView != SwipeDirections.DIRECTION_NEUTRAL)
+        if(visibleView != SwipeDirection.DIRECTION_NEUTRAL)
             mBackgroundMap.get(visibleView).setVisibility(View.INVISIBLE);
         mBackgroundMap.get(direction).setVisibility(View.VISIBLE);
         visibleView = direction;
@@ -122,9 +126,10 @@ public class SwipeViewGroup extends FrameLayout {
      */
     public void translateBackgrounds(){
         this.setClipChildren(false);
-        for(int i=0;i<mBackgroundMap.size();i++){
-            int key = mBackgroundMap.keyAt(i);
-            View value = mBackgroundMap.valueAt(i);
+
+        for (Map.Entry<SwipeDirection, View> entry : mBackgroundMap.entrySet()) {
+            int key = entry.getKey().getValue();
+            View value = entry.getValue();
             value.setTranslationX(-Integer.signum(key)*value.getWidth());
         }
     }

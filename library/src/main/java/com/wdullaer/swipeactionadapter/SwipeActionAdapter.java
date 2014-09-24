@@ -23,6 +23,9 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 /**
  * Adapter that adds support for multiple swipe actions to your ListView
  *
@@ -39,7 +42,8 @@ public class SwipeActionAdapter extends DecoratorAdapter implements
     private float mFarSwipeFraction = 0.5f; // Swipe half tile to go to "FAR" swipe
     private float mDismissSwipeFraction = 0.3f; // Swipe half tile to go to "FAR" swipe
 
-    protected SparseArray<Integer> mBackgroundResIds = new SparseArray<Integer>();
+    protected final EnumMap<SwipeDirection, Integer> mBackgroundResIds =
+            new EnumMap<SwipeDirection, Integer>(SwipeDirection.class);
 
     public SwipeActionAdapter(BaseAdapter baseAdapter){
         super(baseAdapter);
@@ -52,8 +56,9 @@ public class SwipeActionAdapter extends DecoratorAdapter implements
 
         if(output == null) {
             output = new SwipeViewGroup(parent.getContext());
-            for (int i = 0; i < mBackgroundResIds.size(); i++) {
-                output.addBackground(View.inflate(parent.getContext(),mBackgroundResIds.valueAt(i), null),mBackgroundResIds.keyAt(i));
+            for (Map.Entry<SwipeDirection, Integer> entry : mBackgroundResIds.entrySet()) {
+                output.addBackground(View.inflate(parent.getContext(),
+                                entry.getValue(), null), entry.getKey());
             }
         }
 
@@ -85,7 +90,7 @@ public class SwipeActionAdapter extends DecoratorAdapter implements
      * @return boolean indicating whether the item should be dismissed afterwards or not
      */
     @Override
-    public boolean onAction(ListView listView, int position, int direction){
+    public boolean onAction(ListView listView, int position, SwipeDirection direction){
         return mSwipeActionListener != null && mSwipeActionListener.onSwipe(position,direction);
     }
 
@@ -179,12 +184,12 @@ public class SwipeActionAdapter extends DecoratorAdapter implements
      * Add a background image for a certain callback. The key for the background must be one of the
      * directions from the SwipeDirections class.
      *
-     * @param key the identifier of the callback for which this resource should be shown
+     * @param direction the {@link SwipeDirection} of the callback for which this resource should be shown
      * @param resId the resource Id of the background to add
      * @return A reference to the current instance so that commands can be chained
      */
-    public SwipeActionAdapter addBackground(int key, int resId){
-        if(SwipeDirections.getAllDirections().contains(key)) mBackgroundResIds.put(key,resId);
+    public SwipeActionAdapter addBackground(SwipeDirection direction, int resId){
+        mBackgroundResIds.put(direction,resId);
         return this;
     }
 
@@ -204,6 +209,6 @@ public class SwipeActionAdapter extends DecoratorAdapter implements
      */
     public interface SwipeActionListener{
         public boolean hasActions(int position);
-        public boolean onSwipe(int position, int direction);
+        public boolean onSwipe(int position, SwipeDirection direction);
     }
 }
