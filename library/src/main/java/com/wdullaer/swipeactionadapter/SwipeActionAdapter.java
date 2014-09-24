@@ -36,6 +36,8 @@ public class SwipeActionAdapter extends DecoratorAdapter implements
     protected SwipeActionListener mSwipeActionListener;
     private boolean mFadeOut = false;
     private boolean mFixedBackgrounds = false;
+    private float mFarSwipeFraction = 0.5f; // Swipe half tile to go to "FAR" swipe
+    private float mDismissSwipeFraction = 0.3f; // Swipe half tile to go to "FAR" swipe
 
     protected SparseArray<Integer> mBackgroundResIds = new SparseArray<Integer>();
 
@@ -96,6 +98,42 @@ public class SwipeActionAdapter extends DecoratorAdapter implements
     public SwipeActionAdapter setFadeOut(boolean mFadeOut){
         this.mFadeOut = mFadeOut;
         if(mListView != null) mTouchListener.setFadeOut(mFadeOut);
+        return this;
+    }
+
+    /**
+     * Set fraction of view that needs to be swiped before switching
+     * to "FAR" swipe
+     *
+     * @param farSwipeFraction the fraction of the width to swipe to switch to far swipe
+     *                         (value between 0 and 1).
+     * @return A reference to the current instance so that commands can be chained
+     */
+    public SwipeActionAdapter setFarSwipeFraction(float farSwipeFraction){
+
+        if (farSwipeFraction < 0 || farSwipeFraction > 1) {
+            throw new IllegalArgumentException("Must be a value between 0 and 1");
+        }
+        this.mFarSwipeFraction = farSwipeFraction;
+        if(mListView != null) mTouchListener.setFarSwipeFraction(mFarSwipeFraction);
+        return this;
+    }
+
+
+    /**
+     * Set fraction of view that needs to be swiped before counted as dismissal of the view
+     *
+     * @param dismissSwipeFraction the fraction of the width to swipe to switch to far swipe
+     *                         (value between 0 and 1).
+     * @return A reference to the current instance so that commands can be chained
+     */
+    public SwipeActionAdapter setDismissSwipeFraction(float dismissSwipeFraction){
+
+        if (dismissSwipeFraction < 0 || dismissSwipeFraction > 1) {
+            throw new IllegalArgumentException("Must be a value between 0 and 1");
+        }
+        this.mDismissSwipeFraction = dismissSwipeFraction;
+        if(mListView != null) mTouchListener.setDismissSwipeFraction(mDismissSwipeFraction);
         return this;
     }
 

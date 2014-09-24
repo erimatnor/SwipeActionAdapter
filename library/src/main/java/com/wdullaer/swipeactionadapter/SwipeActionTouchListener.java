@@ -82,6 +82,8 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
     private boolean mFadeOut = false;
     private boolean mFixedBackgrounds = false;
+    private float mFarSwipeFraction = 0.5f;
+    private float mDismissSwipeFraction = 0.3f;
 
     // Transient properties
     private List<PendingDismissData> mPendingDismisses = new ArrayList<PendingDismissData>();
@@ -192,6 +194,30 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
         mFixedBackgrounds = fixedBackgrounds;
     }
 
+    public void setFarSwipeFraction(float fraction) {
+        mFarSwipeFraction = fraction;
+    }
+
+    public void setDismissSwipeFraction(float fraction) {
+        mDismissSwipeFraction = fraction;
+    }
+
+    private float farSwipeDelta() {
+        return (mViewWidth * mFarSwipeFraction);
+    }
+
+    private boolean isFarSwipe(float deltaX) {
+        return Math.abs(deltaX) > farSwipeDelta();
+    }
+
+    private float dismissSwipeDelta() {
+        return (mViewWidth * mDismissSwipeFraction);
+    }
+
+    private boolean isDismissSwipe(float deltaX) {
+        return Math.abs(deltaX) > dismissSwipeDelta();
+    }
+
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (mViewWidth < 2) {
@@ -282,7 +308,7 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
                 float absVelocityY = Math.abs(mVelocityTracker.getYVelocity());
                 boolean dismiss = false;
                 boolean dismissRight = false;
-                if (Math.abs(deltaX) > mViewWidth / 2 && mSwiping) {
+                if (isDismissSwipe(deltaX) && mSwiping) {
                     dismiss = true;
                     dismissRight = deltaX > 0;
                 } else if (mMinFlingVelocity <= absVelocityX && absVelocityX <= mMaxFlingVelocity
@@ -345,9 +371,19 @@ public class SwipeActionTouchListener implements View.OnTouchListener {
                     mSwiping = true;
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
 
-                    if(!mFar && Math.abs(deltaX) > mViewWidth/2) mFar = true;
-                    if(!mFar) mDirection = (deltaX > 0 ? SwipeDirections.DIRECTION_NORMAL_RIGHT : SwipeDirections.DIRECTION_NORMAL_LEFT);
-                    else mDirection = (deltaX > 0 ? SwipeDirections.DIRECTION_FAR_RIGHT : SwipeDirections.DIRECTION_FAR_LEFT);
+                    /*
+                    if (!mFar && isFarSwipe(deltaX)) {
+                        mFar = true;
+                    }
+                    */
+
+                    if (isFarSwipe(deltaX)) {
+                        mDirection = (deltaX > 0 ? SwipeDirections.DIRECTION_FAR_RIGHT :
+                                SwipeDirections.DIRECTION_FAR_LEFT);
+                    } else {
+                        mDirection = (deltaX > 0 ? SwipeDirections.DIRECTION_NORMAL_RIGHT :
+                                SwipeDirections.DIRECTION_NORMAL_LEFT);
+                    }
                     mDownViewGroup.showBackground(mDirection);
 
                     mListView.requestDisallowInterceptTouchEvent(true);
